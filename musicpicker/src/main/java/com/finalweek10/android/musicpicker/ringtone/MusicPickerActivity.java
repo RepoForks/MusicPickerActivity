@@ -94,10 +94,22 @@ public class MusicPickerActivity extends AppCompatActivity
      */
     public static final String EXTRA_DEFAULT_RINGTONE_NAME = "extra_default_ringtone_name";
 
+    /**
+     * Key to an extra that defines the stream type of preview musics.
+     */
     public static final String EXTRA_PREVIEW_STREAM_TYPE = "extra_preview_stream_type";
+
+    /**
+     * Key to an extra that defines the audio attributes of preview musics.
+     * Only works when device is L or later
+     */
     public static final String EXTRA_PREVIEW_AUDIO_ATTRIBUTES = "extra_preview_audio_attributes";
 
+    /**
+     * Key to an extra that defines the name of the selected music.
+     */
     public static final String EXTRA_SELECTED_NAME = "extra_selected_title";
+
 
     /**
      * Key to an instance state value indicating if the selected ringtone is currently playing.
@@ -149,17 +161,24 @@ public class MusicPickerActivity extends AppCompatActivity
      */
     private int mIndexOfRingtoneToRemove = RecyclerView.NO_POSITION;
 
+    /**
+     * Contains objects to interact with data
+     * In AOSP, singleton design pattern is used. However, it's not ideal here
+     * because this object only need to exist during this activity is alive.
+     * Therefore, this object will be created in onCreate() and set to null in finish().
+     * If there's any better solution, pls tell me(pull  request, email or whatever). :)
+     */
     public static Toolbox sToolbox;
 
     /**
      * @return an intent that launches the ringtone picker to edit the ringtone of all timers
      */
     public static Intent createRingtonePickerIntent(Context context) {
+        Uri defaultUri = Utils.getResourceUri(context, R.raw.default_ringtone);
         Intent intent = new Intent(context, MusicPickerActivity.class)
-                .putExtra(EXTRA_TITLE, R.string.app_name)
-//                .putExtra(EXTRA_RINGTONE_URI, dataModel.getTimerRingtoneUri())
-                .putExtra(EXTRA_DEFAULT_RINGTONE_URI,
-                        Utils.getResourceUri(context, R.raw.default_expire))
+                .putExtra(EXTRA_TITLE, R.string.module_name)
+                .putExtra(EXTRA_RINGTONE_URI, defaultUri)
+                .putExtra(EXTRA_DEFAULT_RINGTONE_URI, defaultUri)
                 .putExtra(EXTRA_DEFAULT_RINGTONE_NAME, R.string.default_alarm_ringtone_title)
                 .putExtra(EXTRA_PREVIEW_STREAM_TYPE, STREAM_ALARM);
         if (Utils.isLOrLater()) {

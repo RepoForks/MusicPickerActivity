@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">musicpicker</string>
+    <string name="module_name">Music Picker</string>
 
     <!-- Label for adding a new ringtone sound [CHAR LIMIT=30]-->
     <string name="add_new_sound">Add new</string>

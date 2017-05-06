@@ -184,14 +184,14 @@ public final class AsyncRingtonePlayer {
      * @return Uri of the ringtone to play when the user is in a telephone call
      */
     private static Uri getInCallRingtoneUri(Context context) {
-        return Utils.getResourceUri(context, R.raw.default_expire);
+        return Utils.getResourceUri(context, R.raw.default_ringtone);
     }
 
     /**
      * @return Uri of the ringtone to play when the chosen ringtone fails to play
      */
     private static Uri getFallbackRingtoneUri(Context context) {
-        return Utils.getResourceUri(context, R.raw.default_expire);
+        return Utils.getResourceUri(context, R.raw.default_ringtone);
     }
 
     /**

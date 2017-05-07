@@ -1,4 +1,4 @@
-package com.finalweek10.android.musicpicker;
+package com.finalweek10.android.musicpickeractivity;
 
 import android.app.Application;
 import android.os.StrictMode;
@@ -6,7 +6,7 @@ import android.os.StrictMode;
 import com.squareup.leakcanary.LeakCanary;
 
 /**
- * Created on 2017/5/5.
+ * Created on 2017/5/6.
  * Hello, friend.
  */
 

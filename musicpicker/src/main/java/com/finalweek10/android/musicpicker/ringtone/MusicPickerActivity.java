@@ -16,34 +16,34 @@
 
 package com.finalweek10.android.musicpicker.ringtone;
 
-import android.app.FragmentManager;
+import android.Manifest;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.VisibleForTesting;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Toast;
 
 import com.finalweek10.android.musicpicker.R;
 import com.finalweek10.android.musicpicker.actionbarmenu.MenuItemControllerFactory;
-import com.finalweek10.android.musicpicker.actionbarmenu.NavUpMenuItemController;
-import com.finalweek10.android.musicpicker.actionbarmenu.OptionsMenuManager;
 import com.finalweek10.android.musicpicker.data.DataModel;
-import com.finalweek10.android.musicpicker.util.DropShadowController;
 import com.finalweek10.android.musicpicker.util.ItemAdapter;
 import com.finalweek10.android.musicpicker.util.LogUtils;
 import com.finalweek10.android.musicpicker.util.RingtonePreviewKlaxon;
@@ -61,6 +61,7 @@ import static com.finalweek10.android.musicpicker.ringtone.RingtoneViewHolder.VI
 import static com.finalweek10.android.musicpicker.ringtone.RingtoneViewHolder.VIEW_TYPE_SYSTEM_SOUND;
 import static com.finalweek10.android.musicpicker.util.ItemAdapter.ItemViewHolder.Factory;
 import static com.finalweek10.android.musicpicker.util.ItemAdapter.OnItemClickedListener;
+import static com.finalweek10.android.musicpicker.util.Utils.isUsingNewStorage;
 
 /**
  * This activity presents a set of ringtones from which the user may select one. The set includes:
@@ -71,18 +72,13 @@ import static com.finalweek10.android.musicpicker.util.ItemAdapter.OnItemClicked
  * <li>user-selected audio files available as ringtones</li>
  * </ul>
  */
-public class MusicPickerActivity extends AppCompatActivity
+public class MusicPickerActivity extends BaseMusicActivity
         implements LoaderManager.LoaderCallbacks<List<ItemAdapter.ItemHolder<Uri>>> {
 
     /**
      * Key to an extra that defines resource id to the title of this activity.
      */
     public static final String EXTRA_TITLE = "extra_title";
-
-    /**
-     * Key to an extra that identifies the selected ringtone.
-     */
-    public static final String EXTRA_RINGTONE_URI = "extra_ringtone_uri";
 
     /**
      * Key to an extra that defines the uri representing the default ringtone.
@@ -106,32 +102,6 @@ public class MusicPickerActivity extends AppCompatActivity
     public static final String EXTRA_PREVIEW_AUDIO_ATTRIBUTES = "extra_preview_audio_attributes";
 
     /**
-     * Key to an extra that defines the name of the selected music.
-     */
-    public static final String EXTRA_SELECTED_NAME = "extra_selected_title";
-
-
-    /**
-     * Key to an instance state value indicating if the selected ringtone is currently playing.
-     */
-    private static final String STATE_KEY_PLAYING = "extra_is_playing";
-
-    /**
-     * The controller that shows the drop shadow when content is not scrolled to the top.
-     */
-    private DropShadowController mDropShadowController;
-
-    /**
-     * Generates the items in the activity context menu.
-     */
-    private OptionsMenuManager mOptionsMenuManager;
-
-    /**
-     * Displays a set of selectable ringtones.
-     */
-    private RecyclerView mRecyclerView;
-
-    /**
      * Stores the set of ItemHolders that wrap the selectable ringtones.
      */
     private ItemAdapter<ItemAdapter.ItemHolder<Uri>> mRingtoneAdapter;
@@ -145,16 +115,6 @@ public class MusicPickerActivity extends AppCompatActivity
      * The uri of the default ringtone.
      */
     private Uri mDefaultRingtoneUri;
-
-    /**
-     * The uri of the ringtone to select after data is loaded.
-     */
-    private Uri mSelectedRingtoneUri;
-
-    /**
-     * {@code true} indicates the {@link #mSelectedRingtoneUri} must be played after data load.
-     */
-    private boolean mIsPlaying;
 
     /**
      * The location of the custom ringtone to be removed.
@@ -199,11 +159,6 @@ public class MusicPickerActivity extends AppCompatActivity
         final Context context = getApplicationContext();
         final Intent intent = getIntent();
 
-        if (savedInstanceState != null) {
-            mIsPlaying = savedInstanceState.getBoolean(STATE_KEY_PLAYING);
-            mSelectedRingtoneUri = savedInstanceState.getParcelable(EXTRA_RINGTONE_URI);
-        }
-
         sToolbox = new Toolbox(
                 new DataModel(this, Utils.getDefaultSharedPreferences(this)));
 
@@ -226,9 +181,7 @@ public class MusicPickerActivity extends AppCompatActivity
 
         setVolumeControlStream(streamType);
 
-        mOptionsMenuManager = new OptionsMenuManager();
-        mOptionsMenuManager.addMenuItemController(new NavUpMenuItemController(this))
-                .addMenuItemController(MenuItemControllerFactory.getInstance()
+        mOptionsMenuManager.addMenuItemController(MenuItemControllerFactory.getInstance()
                         .buildMenuItemControllers(this));
 
         final LayoutInflater inflater = getLayoutInflater();
@@ -262,54 +215,6 @@ public class MusicPickerActivity extends AppCompatActivity
         getLoaderManager().initLoader(0 /* id */, null /* args */, this /* callback */);
 
         registerForContextMenu(mRecyclerView);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        final View dropShadow = findViewById(R.id.drop_shadow);
-        mDropShadowController = new DropShadowController(dropShadow, mRecyclerView);
-    }
-
-    @Override
-    protected void onPause() {
-        mDropShadowController.stop();
-        mDropShadowController = null;
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        if (!isChangingConfigurations()) {
-            stopPlayingRingtone(getSelectedRingtoneHolder(), false);
-        }
-        super.onStop();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putBoolean(STATE_KEY_PLAYING, mIsPlaying);
-        outState.putParcelable(EXTRA_RINGTONE_URI, mSelectedRingtoneUri);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        mOptionsMenuManager.onCreateOptionsMenu(menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        mOptionsMenuManager.onPrepareOptionsMenu(menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return mOptionsMenuManager.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -371,10 +276,12 @@ public class MusicPickerActivity extends AppCompatActivity
             return;
         }
 
-        // Bail if the permission to read (playback) the audio at the uri was not granted.
-        final int flags = data.getFlags() & FLAG_GRANT_READ_URI_PERMISSION;
-        if (flags != FLAG_GRANT_READ_URI_PERMISSION) {
-            return;
+        if (isUsingNewStorage()) {
+            // Bail if the permission to read (playback) the audio at the uri was not granted.
+            final int flags = data.getFlags() & FLAG_GRANT_READ_URI_PERMISSION;
+            if (flags != FLAG_GRANT_READ_URI_PERMISSION) {
+                return;
+            }
         }
 
         // Start a task to fetch the display name of the audio content and add the custom ringtone.
@@ -389,8 +296,6 @@ public class MusicPickerActivity extends AppCompatActivity
         mIndexOfRingtoneToRemove = RecyclerView.NO_POSITION;
 
         // Launch the confirmation dialog.
-        final FragmentManager manager = getFragmentManager();
-        final boolean hasPermissions = toRemove.hasPermissions();
         removeCustomRingtone(toRemove.getUri());
         return true;
     }
@@ -408,49 +313,9 @@ public class MusicPickerActivity extends AppCompatActivity
         return null;
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    RingtoneHolder getSelectedRingtoneHolder() {
+    @Override
+    protected RingtoneHolder getSelectedRingtoneHolder() {
         return getRingtoneHolder(mSelectedRingtoneUri);
-    }
-
-    /**
-     * The given {@code ringtone} will be selected as a side-effect of playing the ringtone.
-     *
-     * @param ringtone the ringtone to be played
-     */
-    private void startPlayingRingtone(RingtoneHolder ringtone) {
-        if (!ringtone.isPlaying() && !ringtone.isSilent()) {
-            RingtonePreviewKlaxon.start(getApplicationContext(), ringtone.getUri());
-            ringtone.setPlaying(true);
-            mIsPlaying = true;
-        }
-        if (!ringtone.isSelected()) {
-            ringtone.setSelected(true);
-            mSelectedRingtoneUri = ringtone.getUri();
-        }
-        ringtone.notifyItemChanged();
-    }
-
-    /**
-     * @param ringtone the ringtone to stop playing
-     * @param deselect {@code true} indicates the ringtone should also be deselected;
-     *                 {@code false} indicates its selection state should remain unchanged
-     */
-    private void stopPlayingRingtone(RingtoneHolder ringtone, boolean deselect) {
-        if (ringtone == null) {
-            return;
-        }
-
-        if (ringtone.isPlaying()) {
-            RingtonePreviewKlaxon.stop(this);
-            ringtone.setPlaying(false);
-            mIsPlaying = false;
-        }
-        if (deselect && ringtone.isSelected()) {
-            ringtone.setSelected(false);
-            mSelectedRingtoneUri = null;
-        }
-        ringtone.notifyItemChanged();
     }
 
     /**
@@ -460,13 +325,15 @@ public class MusicPickerActivity extends AppCompatActivity
      */
     private void removeCustomRingtone(Uri uri) {
         final ContentResolver cr = getContentResolver();
-        try {
-            // Release the permission to read (playback) the audio at the uri.
-            cr.releasePersistableUriPermission(uri, FLAG_GRANT_READ_URI_PERMISSION);
-        } catch (SecurityException ignore) {
-            // If the file was already deleted from the file system, a SecurityException is
-            // thrown indicating this app did not hold the read permission being released.
-            LogUtils.w("SecurityException while releasing read permission for " + uri);
+        if (isUsingNewStorage()) {
+            try {
+                // Release the permission to read (playback) the audio at the uri.
+                cr.releasePersistableUriPermission(uri, FLAG_GRANT_READ_URI_PERMISSION);
+            } catch (SecurityException ignore) {
+                // If the file was already deleted from the file system, a SecurityException is
+                // thrown indicating this app did not hold the read permission being released.
+                LogUtils.w("SecurityException while releasing read permission for " + uri);
+            }
         }
 
         // Remove the corresponding custom ringtone.
@@ -503,10 +370,11 @@ public class MusicPickerActivity extends AppCompatActivity
             switch (id) {
                 case AddCustomRingtoneViewHolder.CLICK_ADD_NEW:
                     stopPlayingRingtone(getSelectedRingtoneHolder(), false);
-                    startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT)
-                            .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-                            .addCategory(Intent.CATEGORY_OPENABLE)
-                            .setType("audio/*"), 0);
+                    if (isUsingNewStorage()) {
+                        startOpenDocumentActivity();
+                    } else {
+                        startGetContentActivity();
+                    }
                     break;
 
                 case RingtoneViewHolder.CLICK_NORMAL:
@@ -557,10 +425,14 @@ public class MusicPickerActivity extends AppCompatActivity
         protected String doInBackground(Void... voids) {
             final ContentResolver contentResolver = mContext.getContentResolver();
 
-            // Take the long-term permission to read (playback) the audio at the uri.
-            contentResolver.takePersistableUriPermission(mUri, FLAG_GRANT_READ_URI_PERMISSION);
+            if (isUsingNewStorage()) {
+                // Take the long-term permission to read (playback) the audio at the uri.
+                contentResolver.takePersistableUriPermission(mUri, FLAG_GRANT_READ_URI_PERMISSION);
+            }
 
-            try (Cursor cursor = contentResolver.query(mUri, null, null, null, null)) {
+            Cursor cursor = null;
+            try {
+                cursor = contentResolver.query(mUri, null, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
                     // If the file was a media file, return its title.
                     final int titleIndex = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
@@ -583,6 +455,10 @@ public class MusicPickerActivity extends AppCompatActivity
                 }
             } catch (Exception e) {
                 LogUtils.e("Unable to locate title for custom ringtone: " + mUri, e);
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
             }
 
             return mContext.getString(R.string.unknown_ringtone_title);
@@ -600,6 +476,57 @@ public class MusicPickerActivity extends AppCompatActivity
             // Reload the data to reflect the change in the UI.
             getLoaderManager().restartLoader(0 /* id */, null /* args */,
                     MusicPickerActivity.this /* callback */);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void startOpenDocumentActivity() {
+        startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT)
+                .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+                .addCategory(Intent.CATEGORY_OPENABLE)
+                .setType("audio/*"), 0);
+    }
+
+    private void startGetContentActivity() {
+        if (hasReadStoragePermission()) {
+            startActivityForResult(new Intent(this, ChooseMusicActivity.class), 0);
+//            startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT)
+//                    .addCategory(Intent.CATEGORY_OPENABLE)
+//                    .setType("audio/*"), 0);
+        } else {
+            requestReadStoragePermission();
+        }
+    }
+
+    private boolean hasReadStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Toast.makeText(
+                        this, R.string.custom_ringtone_lost_permissions, Toast.LENGTH_SHORT).show();
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void requestReadStoragePermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startGetContentActivity();
+                }
+            }
         }
     }
 }

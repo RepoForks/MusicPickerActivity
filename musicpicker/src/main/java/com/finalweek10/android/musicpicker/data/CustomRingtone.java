@@ -36,7 +36,7 @@ public final class CustomRingtone implements Comparable<CustomRingtone> {
     /** {@code true} iff the application has permission to read the content of {@code mUri uri}. */
     private final boolean mHasPermissions;
 
-    CustomRingtone(long id, Uri uri, String title, boolean hasPermissions) {
+    public CustomRingtone(long id, Uri uri, String title, boolean hasPermissions) {
         mId = id;
         mUri = uri;
         mTitle = title;

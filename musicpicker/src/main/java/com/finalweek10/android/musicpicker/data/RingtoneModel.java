@@ -34,11 +34,12 @@ import android.provider.Settings;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
-import com.finalweek10.android.musicpicker.util.LogUtils;
 import com.finalweek10.android.musicpicker.R;
+import com.finalweek10.android.musicpicker.util.LogUtils;
 import com.finalweek10.android.musicpicker.util.Utils;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -57,7 +58,9 @@ final class RingtoneModel {
     private final SharedPreferences mPrefs;
 
     /** Maps ringtone uri to ringtone title; looking up a title from scratch is expensive. */
-    private final Map<Uri, String> mRingtoneTitles = new ArrayMap<>(16);
+    private final Map<Uri, String> mRingtoneTitles =
+            Utils.isUsingNewStorage() ?
+                    new ArrayMap<Uri, String>(16) : new HashMap<Uri, String>(16);
 
     /** Clears data structures containing data that is locale-sensitive. */
     @SuppressWarnings("FieldCanBeLocal")
@@ -132,9 +135,16 @@ final class RingtoneModel {
             permissions.add(uriPermission.getUri());
         }
 
-        for (ListIterator<CustomRingtone> i = ringtones.listIterator(); i.hasNext();) {
-            final CustomRingtone ringtone = i.next();
-            i.set(ringtone.setHasPermissions(permissions.contains(ringtone.getUri())));
+        if (Utils.isUsingNewStorage()) {
+            for (ListIterator<CustomRingtone> i = ringtones.listIterator(); i.hasNext();) {
+                final CustomRingtone ringtone = i.next();
+                i.set(ringtone.setHasPermissions(permissions.contains(ringtone.getUri())));
+            }
+        } else {
+            for (ListIterator<CustomRingtone> i = ringtones.listIterator(); i.hasNext();) {
+                final CustomRingtone ringtone = i.next();
+                i.set(ringtone.setHasPermissions(true));
+            }
         }
     }
 
@@ -148,7 +158,9 @@ final class RingtoneModel {
         ringtoneManager.setType(STREAM_ALARM);
 
         // Cache a title for each system ringtone.
-        try (Cursor cursor = ringtoneManager.getCursor()) {
+        Cursor cursor = null;
+        try {
+            cursor = ringtoneManager.getCursor();
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 final String ringtoneTitle = cursor.getString(TITLE_COLUMN_INDEX);
                 final Uri ringtoneUri = ringtoneManager.getRingtoneUri(cursor.getPosition());
@@ -157,6 +169,10 @@ final class RingtoneModel {
         } catch (Throwable ignored) {
             // best attempt only
             LogUtils.e("Error loading ringtone title cache", ignored);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 

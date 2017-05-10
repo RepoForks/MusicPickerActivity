@@ -135,6 +135,10 @@ public class ItemAdapter<T extends ItemAdapter.ItemHolder>
         return mItemHolders;
     }
 
+    public final T getItemAt(int index) {
+        return mItemHolders.get(index);
+    }
+
     /**
      * Sets the list of item holders to serve as the dataset for this adapter and invokes
      * {@link #notifyDataSetChanged()} to update the UI.

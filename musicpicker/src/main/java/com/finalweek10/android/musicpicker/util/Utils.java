@@ -49,20 +49,8 @@ public class Utils {
         }
     }
 
-    /**
-     * @return {@code true} if the device is prior to {@link Build.VERSION_CODES#LOLLIPOP}
-     */
-    public static boolean isPreL() {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
-    }
-
-    /**
-     * @return {@code true} if the device is {@link Build.VERSION_CODES#LOLLIPOP} or
-     * {@link Build.VERSION_CODES#LOLLIPOP_MR1}
-     */
-    public static boolean isLOrLMR1() {
-        final int sdkInt = Build.VERSION.SDK_INT;
-        return sdkInt == Build.VERSION_CODES.LOLLIPOP || sdkInt == Build.VERSION_CODES.LOLLIPOP_MR1;
+    public static boolean isKitkatOrLater() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     /**
@@ -93,12 +81,11 @@ public class Utils {
         return BuildCompat.isAtLeastN();
     }
 
-    /**
-     * @return {@code true} if the device is {@link Build.VERSION_CODES#N_MR1} or later
-     */
-    public static boolean isNMR1OrLater() {
-        return BuildCompat.isAtLeastNMR1();
+    public static boolean isUsingNewStorage() {
+//        return Utils.isKitkatOrLater();
+        return false;
     }
+
 
     /**
      * @param resourceId identifies an application resource

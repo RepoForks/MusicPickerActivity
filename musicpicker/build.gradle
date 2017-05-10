@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.ykAR6Bqy5DeG'
+group = 'com.github.ykAR6Bqy5DeG'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -28,4 +28,5 @@ dependencies {
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.android.support.constraint:constraint-layout:${rootProject.ext.constraintLayoutVersion}"
     compile "com.android.support:design:${rootProject.ext.supportLibVersion}"
+    compile "com.simplecityapps:recyclerview-fastscroll:${rootProject.ext.fastScrollRecyclerViewVersion}"
 }

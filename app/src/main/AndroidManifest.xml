@@ -23,6 +23,12 @@
             android:excludeFromRecents="true"
             android:taskAffinity=""
             android:theme="@style/MyRingtonePickTheme"/>
+
+        <activity
+            android:name="com.finalweek10.android.musicpicker.ringtone.ChooseMusicActivity"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@style/MyRingtonePickTheme"/>
     </application>
 
 </manifest>

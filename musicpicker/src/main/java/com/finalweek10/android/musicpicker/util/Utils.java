@@ -81,9 +81,12 @@ public class Utils {
         return BuildCompat.isAtLeastN();
     }
 
+    /**
+     * @return {@code true} We can ACTION_OPEN_DOCUMENT to pick ringtones without permission.
+     */
     public static boolean isUsingNewStorage() {
-//        return Utils.isKitkatOrLater();
-        return false;
+        return Utils.isKitkatOrLater();
+//        return false;
     }
 
 

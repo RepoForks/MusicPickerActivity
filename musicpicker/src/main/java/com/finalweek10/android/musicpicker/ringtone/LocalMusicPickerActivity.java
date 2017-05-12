@@ -18,7 +18,13 @@ import java.util.List;
 
 import static com.finalweek10.android.musicpicker.ringtone.RingtoneViewHolder.VIEW_TYPE_CUSTOM_SOUND;
 
-public class ChooseMusicActivity extends BaseMusicActivity
+/**
+ * This activity presents all device's external musics.
+ * This activity is used when users' device is lower than
+ * {@link android.os.Build.VERSION_CODES#KITKAT}
+ * when {@link Intent#ACTION_OPEN_DOCUMENT} is not available.
+ */
+public class LocalMusicPickerActivity extends BaseMusicActivity
         implements LoaderManager.LoaderCallbacks<List<RingtoneHolder>> {
 
     /**
@@ -77,7 +83,6 @@ public class ChooseMusicActivity extends BaseMusicActivity
 
     @Override
     public void onLoaderReset(Loader<List<RingtoneHolder>> loader) {
-
     }
 
     @Override
@@ -109,8 +114,8 @@ public class ChooseMusicActivity extends BaseMusicActivity
     }
 
     /**
-     * This click handler alters selection and playback of ringtones. It also launches the system
-     * file chooser to search for openable audio files that may serve as ringtones.
+     * the same click-to-preview action as
+     * {@link MusicPickerActivity.ItemClickWatcher}.CLICK_NORMAL part
      */
     private class ItemClickWatcher implements ItemAdapter.OnItemClickedListener {
         @Override

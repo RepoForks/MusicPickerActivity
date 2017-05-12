@@ -15,6 +15,11 @@ import com.finalweek10.android.musicpicker.actionbarmenu.OptionsMenuManager;
 import com.finalweek10.android.musicpicker.util.DropShadowController;
 import com.finalweek10.android.musicpicker.util.RingtonePreviewKlaxon;
 
+/**
+ * Basic Activity provides extra keys, Navigate-Up menu item,
+ * music preview playback, and savedInstanceState
+ * (These are common stuffs in {@link MusicPickerActivity} and {@link LocalMusicPickerActivity}.
+ */
 public abstract class BaseMusicActivity extends AppCompatActivity {
 
     /**

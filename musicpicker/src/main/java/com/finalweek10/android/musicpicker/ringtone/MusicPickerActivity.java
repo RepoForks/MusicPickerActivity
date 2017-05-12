@@ -16,13 +16,11 @@
 
 package com.finalweek10.android.musicpicker.ringtone;
 
-import android.Manifest;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -31,15 +29,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.finalweek10.android.musicpicker.R;
 import com.finalweek10.android.musicpicker.actionbarmenu.MenuItemControllerFactory;
@@ -182,7 +176,7 @@ public class MusicPickerActivity extends BaseMusicActivity
         setVolumeControlStream(streamType);
 
         mOptionsMenuManager.addMenuItemController(MenuItemControllerFactory.getInstance()
-                        .buildMenuItemControllers(this));
+                .buildMenuItemControllers(this));
 
         final LayoutInflater inflater = getLayoutInflater();
         final OnItemClickedListener listener = new ItemClickWatcher();
@@ -373,7 +367,7 @@ public class MusicPickerActivity extends BaseMusicActivity
                     if (isUsingNewStorage()) {
                         startOpenDocumentActivity();
                     } else {
-                        startGetContentActivity();
+                        startLocalMusicPickerActivity();
                     }
                     break;
 
@@ -487,46 +481,17 @@ public class MusicPickerActivity extends BaseMusicActivity
                 .setType("audio/*"), 0);
     }
 
-    private void startGetContentActivity() {
-        if (hasReadStoragePermission()) {
-            startActivityForResult(new Intent(this, ChooseMusicActivity.class), 0);
+    private void startLocalMusicPickerActivity() {
+        // This library decides to use self-defined activity to retrieve local music.
+        // Because GET_CONTENT only imports a copy of the data.
+        // And users cannot play the music after restart the app.
+        // What's more, since this activity will be started only when the device is lower than
+        // KITKAT, we even don't need to request permission. :)
+        startActivityForResult(new Intent(this, LocalMusicPickerActivity.class), 0);
+
+
 //            startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT)
 //                    .addCategory(Intent.CATEGORY_OPENABLE)
 //                    .setType("audio/*"), 0);
-        } else {
-            requestReadStoragePermission();
-        }
-    }
-
-    private boolean hasReadStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                Toast.makeText(
-                        this, R.string.custom_ringtone_lost_permissions, Toast.LENGTH_SHORT).show();
-            }
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private void requestReadStoragePermission() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startGetContentActivity();
-                }
-            }
-        }
     }
 }

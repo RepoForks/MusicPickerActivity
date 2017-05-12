@@ -19,7 +19,9 @@ import java.util.List;
  * Hello, friend.
  */
 
-
+/**
+ * Loads all external music files
+ */
 class LocalMusicLoader extends AsyncTaskLoader<List<RingtoneHolder>>  {
 
     LocalMusicLoader(Context context) {

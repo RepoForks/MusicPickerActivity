@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_new_sound">Hinzufügen</string>
+    <string name="silent_ringtone_title">Lautlos</string>
+    <string name="unknown_ringtone_title">Unbekannt</string>
+    <string name="your_sounds">Meine Töne</string>
+    <string name="device_sounds">Gerätetöne</string>
+    <string name="remove_sound">Entfernen</string>
+    <string name="default_alarm_ringtone_title">Standard-Weckerton</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_new_sound">新增</string>
+    <string name="silent_ringtone_title">靜音</string>
+    <string name="unknown_ringtone_title">不明</string>
+    <string name="your_sounds">你的音效</string>
+    <string name="device_sounds">裝置音效</string>
+    <string name="remove_sound">移除</string>
+    <string name="default_alarm_ringtone_title">預設鬧鐘音效</string>
+</resources>

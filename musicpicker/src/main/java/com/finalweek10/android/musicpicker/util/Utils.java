@@ -118,13 +118,6 @@ public class Utils {
     }
 
     /**
-     * @return the current time in milliseconds
-     */
-    public static long currentTimeMillis() {
-        return System.currentTimeMillis();
-    }
-
-    /**
      * Returns the default {@link SharedPreferences} instance from the underlying storage context.
      */
     public static SharedPreferences getDefaultSharedPreferences(Context context) {

@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
 
@@ -71,27 +70,6 @@ public final class ThemeUtils {
                 return colorStateList.getColorForState(stateSet, Color.RED);
             }
             return Color.RED;
-        } finally {
-            a.recycle();
-        }
-    }
-
-    /**
-     * Convenience method for retrieving a themed drawable.
-     *
-     * @param context the {@link Context} to resolve the theme attribute against
-     * @param attr    the attribute corresponding to the drawable to resolve
-     * @return the drawable of the resolved attribute
-     */
-    public static Drawable resolveDrawable(Context context, @AttrRes int attr) {
-        final TypedArray a;
-        synchronized (TEMP_ATTR) {
-            TEMP_ATTR[0] = attr;
-            a = context.obtainStyledAttributes(TEMP_ATTR);
-        }
-
-        try {
-            return a.getDrawable(0);
         } finally {
             a.recycle();
         }

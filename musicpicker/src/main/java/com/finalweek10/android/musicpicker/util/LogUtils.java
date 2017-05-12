@@ -26,7 +26,7 @@ public class LogUtils {
     /**
      * Default logger used for generic logging, i.eTAG. when a specific log tag isn't specified.
      */
-    private final static Logger DEFAULT_LOGGER = new Logger("AlarmClock");
+    private final static Logger DEFAULT_LOGGER = new Logger("MusicPickerActivity");
 
     public static void v(String message, Object... args) {
         DEFAULT_LOGGER.v(message, args);

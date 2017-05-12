@@ -7,8 +7,8 @@ android {
         applicationId "com.finalweek10.android.musicpickeractivity"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode Integer.parseInt(rootProject.ext.VERSION_CODE)
+        versionName rootProject.ext.VERSION_NAME
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

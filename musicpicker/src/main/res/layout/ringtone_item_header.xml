@@ -24,6 +24,8 @@
     android:gravity="start"
     android:paddingBottom="16dp"
     android:paddingEnd="15dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
     android:paddingStart="15dp"
     android:paddingTop="16dp"
     android:textAlignment="viewStart"

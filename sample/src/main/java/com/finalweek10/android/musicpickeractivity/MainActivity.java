@@ -35,11 +35,13 @@ public class MainActivity extends AppCompatActivity {
                         MusicPickerActivity.createRingtonePickerIntent(MainActivity.this);
                 intent.putExtra(MusicPickerActivity.EXTRA_PREVIEW_STREAM_TYPE,
                         AudioManager.STREAM_MUSIC);
-                intent.putExtra(MusicPickerActivity.EXTRA_PREVIEW_AUDIO_ATTRIBUTES,
-                        new AudioAttributes.Builder()
-                                .setUsage(AudioAttributes.USAGE_MEDIA)
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                .build());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    intent.putExtra(MusicPickerActivity.EXTRA_PREVIEW_AUDIO_ATTRIBUTES,
+                            new AudioAttributes.Builder()
+                                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                    .build());
+                }
                 intent.putExtra(MusicPickerActivity.EXTRA_RINGTONE_URI,
                         Uri.parse(mContentView.getText().toString()));
                 startActivityForResult(intent, REQUEST_MUSIC_CODE);

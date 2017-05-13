@@ -36,7 +36,7 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="@integer/gutter_width_percent" />
+            android:layout_weight="@integer/gutter_width_percent"/>
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -55,7 +55,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:importantForAccessibility="no"
-                    android:scaleType="center" />
+                    android:scaleType="center"/>
 
                 <TextView
                     android:id="@+id/ringtone_name"
@@ -64,7 +64,7 @@
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/alarm_text_font_size" />
+                    android:textSize="@dimen/alarm_text_font_size"/>
 
             </LinearLayout>
 
@@ -73,19 +73,20 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:importantForAccessibility="no"
                 android:scaleType="center"
                 android:tint="?attr/colorAccent"
                 android:visibility="gone"
-                app:srcCompat="@drawable/ic_checkmark" />
+                app:srcCompat="@drawable/ic_checkmark"/>
 
         </RelativeLayout>
 
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="@integer/gutter_width_percent" />
+            android:layout_weight="@integer/gutter_width_percent"/>
 
     </LinearLayout>
 

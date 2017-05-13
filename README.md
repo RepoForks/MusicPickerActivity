@@ -24,7 +24,7 @@ Step 2. Add the dependency
 ```
 dependencies {
     ...
-    compile 'com.github.ykAR6Bqy5DeG:MusicPickerActivity:v1.0'
+    compile 'com.github.ykAR6Bqy5DeG:MusicPickerActivity:1.0.1'
 }
 ```
 Step 3. Add activity style to styles.xml

@@ -122,18 +122,21 @@ public class Utils {
      */
     public static SharedPreferences getDefaultSharedPreferences(Context context) {
         context = context.getApplicationContext();
-        final Context storageContext;
-        if (Utils.isNOrLater()) {
-            // All N devices have split storage areas. Migrate the existing preferences into the new
-            // device encrypted storage area if that has not yet occurred.
-            final String name = PreferenceManager.getDefaultSharedPreferencesName(context);
-            storageContext = context.createDeviceProtectedStorageContext();
-            if (!storageContext.moveSharedPreferencesFrom(context, name)) {
-                LogUtils.wtf("Failed to migrate shared preferences");
-            }
-        } else {
-            storageContext = context;
-        }
-        return PreferenceManager.getDefaultSharedPreferences(storageContext);
+//        final Context storageContext;
+        // When an app is running on N device and using default non-encrypted shared preference,
+        // every time this block of commented code is ran, it will move those non-encrypted SP to
+        // a secure area, causing a lost SP when using non-encrypted SP next time.
+//        if (Utils.isNOrLater()) {
+//            // All N devices have split storage areas. Migrate the existing preferences into the new
+//            // device encrypted storage area if that has not yet occurred.
+//            final String name = PreferenceManager.getDefaultSharedPreferencesName(context);
+//            storageContext = context.createDeviceProtectedStorageContext();
+//            if (!storageContext.moveSharedPreferencesFrom(context, name)) {
+//                LogUtils.wtf("Failed to migrate shared preferences");
+//            }
+//        } else {
+//        storageContext = context;
+//        }
+        return PreferenceManager.getDefaultSharedPreferences(context);
     }
 }

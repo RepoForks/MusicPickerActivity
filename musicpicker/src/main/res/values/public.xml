@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public name="silent_ringtone_title" type="string"/>
+    <public name="unknown_ringtone_title" type="string"/>
+</resources>

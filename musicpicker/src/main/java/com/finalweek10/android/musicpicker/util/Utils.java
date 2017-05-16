@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.support.annotation.AnyRes;
 import android.support.v4.os.BuildCompat;
 import android.view.View;
@@ -137,6 +136,6 @@ public class Utils {
 //        } else {
 //        storageContext = context;
 //        }
-        return PreferenceManager.getDefaultSharedPreferences(context);
+        return context.getSharedPreferences("music_picker_prefs", Context.MODE_PRIVATE);
     }
 }

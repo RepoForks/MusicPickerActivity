@@ -24,7 +24,7 @@ Step 2. Add the dependency
 ```
 dependencies {
     ...
-    compile 'com.github.ykAR6Bqy5DeG:MusicPickerActivity:1.0.1'
+    compile 'com.github.ykAR6Bqy5DeG:MusicPickerActivity:1.0.3'
 }
 ```
 Step 3. Add activity style to styles.xml
@@ -92,6 +92,10 @@ but I cannot test selecting local music because of a possible emulator bug(Canno
 So if you find something goes wrong, just post an issue or use any tool to tell me. :)
 
 ## Update
+#### 1.0.3
+Makes project resources private
+#### 1.0.2
+Fixes shared preference lost bug on Android N
 #### 1.0.1
 1. Adds support for devices lower than API Level 19
 2. Adds six translations

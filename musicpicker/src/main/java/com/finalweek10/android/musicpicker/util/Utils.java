@@ -16,14 +16,12 @@
 
 package com.finalweek10.android.musicpicker.util;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.support.annotation.AnyRes;
 import android.support.v4.os.BuildCompat;
 import android.view.View;
 
@@ -88,31 +86,18 @@ public class Utils {
 //        return false;
     }
 
-
-    /**
-     * @param resourceId identifies an application resource
-     * @return the Uri by which the application resource is accessed
-     */
-    public static Uri getResourceUri(Context context, @AnyRes int resourceId) {
-        return new Uri.Builder()
-                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-                .authority(context.getPackageName())
-                .path(String.valueOf(resourceId))
-                .build();
-    }
-
     /**
      * @param view the scrollable view to test
      * @return {@code true} iff the {@code view} content is currently scrolled to the top
      */
-    public static boolean isScrolledToTop(View view) {
+    static boolean isScrolledToTop(View view) {
         return !view.canScrollVertically(-1);
     }
 
     /**
      * @return milliseconds since boot, including time spent in sleep
      */
-    public static long now() {
+    static long now() {
         return SystemClock.elapsedRealtime();
     }
 
@@ -124,7 +109,7 @@ public class Utils {
 //        final Context storageContext;
         // When an app is running on N device and using default non-encrypted shared preference,
         // every time this block of commented code is ran, it will move those non-encrypted SP to
-        // a secure area, causing a lost SP when using non-encrypted SP next time.
+        // a secure area, causing lost SP when using non-encrypted SP next time.
 //        if (Utils.isNOrLater()) {
 //            // All N devices have split storage areas. Migrate the existing preferences into the new
 //            // device encrypted storage area if that has not yet occurred.

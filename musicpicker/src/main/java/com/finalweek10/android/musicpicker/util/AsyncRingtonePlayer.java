@@ -1,6 +1,7 @@
 package com.finalweek10.android.musicpicker.util;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -13,6 +14,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.AnyRes;
 import android.telephony.TelephonyManager;
 
 import com.finalweek10.android.musicpicker.R;
@@ -48,7 +50,7 @@ import static android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT;
  * {@link #getFallbackRingtoneUri in-app fallback} is used because playing <strong>some</strong>
  * sort of noise is always preferable to remaining silent.</p>
  */
-public final class AsyncRingtonePlayer {
+final class AsyncRingtonePlayer {
 
     private static final LogUtils.Logger LOGGER = new LogUtils.Logger("AsyncRingtonePlayer");
 
@@ -75,27 +77,27 @@ public final class AsyncRingtonePlayer {
 
     private AudioAttributes mAudioAttributes;
 
-    public AsyncRingtonePlayer(Context context) {
+    AsyncRingtonePlayer(Context context) {
         mContext = context;
     }
 
 
-    public void setStreamType(int streamType) {
+    void setStreamType(int streamType) {
         mStreamType = streamType;
     }
 
-    public void setAudioAttributes(AudioAttributes audioAttributes) {
+    void setAudioAttributes(AudioAttributes audioAttributes) {
         mAudioAttributes = audioAttributes;
     }
 
     /** Plays the ringtone. */
-    public void play(Uri ringtoneUri, long crescendoDuration) {
+    void play(Uri ringtoneUri, long crescendoDuration) {
         LOGGER.d("Posting play.");
         postMessage(EVENT_PLAY, ringtoneUri, crescendoDuration, 0);
     }
 
     /** Stops playing the ringtone. */
-    public void stop() {
+    void stop() {
         LOGGER.d("Posting stop.");
         postMessage(EVENT_STOP, null, 0, 0);
     }
@@ -184,14 +186,14 @@ public final class AsyncRingtonePlayer {
      * @return Uri of the ringtone to play when the user is in a telephone call
      */
     private static Uri getInCallRingtoneUri(Context context) {
-        return Utils.getResourceUri(context, R.raw.default_ringtone);
+        return getResourceUri(context, R.raw.default_ringtone);
     }
 
     /**
      * @return Uri of the ringtone to play when the chosen ringtone fails to play
      */
     private static Uri getFallbackRingtoneUri(Context context) {
-        return Utils.getResourceUri(context, R.raw.default_ringtone);
+        return getResourceUri(context, R.raw.default_ringtone);
     }
 
     /**
@@ -643,5 +645,17 @@ public final class AsyncRingtonePlayer {
             // Schedule the next volume bump in the crescendo.
             return true;
         }
+    }
+
+    /**
+     * @param resourceId identifies an application resource
+     * @return the Uri by which the application resource is accessed
+     */
+    private static Uri getResourceUri(Context context, @AnyRes int resourceId) {
+        return new Uri.Builder()
+                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+                .authority(context.getPackageName())
+                .path(String.valueOf(resourceId))
+                .build();
     }
 }

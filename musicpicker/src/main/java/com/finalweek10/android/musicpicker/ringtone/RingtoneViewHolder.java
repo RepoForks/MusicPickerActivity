@@ -16,7 +16,12 @@
 
 package com.finalweek10.android.musicpicker.ringtone;
 
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.support.annotation.AttrRes;
+import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -26,10 +31,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.finalweek10.android.musicpicker.R;
 import com.finalweek10.android.musicpicker.util.AnimatorUtils;
 import com.finalweek10.android.musicpicker.util.ItemAdapter;
-import com.finalweek10.android.musicpicker.R;
-import com.finalweek10.android.musicpicker.util.ThemeUtils;
 import com.finalweek10.android.musicpicker.util.Utils;
 
 import static android.view.View.GONE;
@@ -71,8 +75,7 @@ final class RingtoneViewHolder extends ItemAdapter.ItemViewHolder<RingtoneHolder
         if (itemViewType == VIEW_TYPE_CUSTOM_SOUND) {
             if (!itemHolder.hasPermissions()) {
                 mImageView.setImageResource(R.drawable.ic_ringtone_not_found);
-                final int colorAccent = ThemeUtils.resolveColor(itemView.getContext(),
-                        R.attr.colorAccent);
+                final int colorAccent = resolveColor(itemView.getContext(), R.attr.colorAccent);
                 mImageView.setColorFilter(colorAccent, PorterDuff.Mode.SRC_ATOP);
             } else {
                 mImageView.setImageResource(R.drawable.placeholder_album_artwork);
@@ -107,12 +110,12 @@ final class RingtoneViewHolder extends ItemAdapter.ItemViewHolder<RingtoneHolder
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view,
-            ContextMenu.ContextMenuInfo contextMenuInfo) {
+                                    ContextMenu.ContextMenuInfo contextMenuInfo) {
         notifyItemClicked(RingtoneViewHolder.CLICK_LONG_PRESS);
         contextMenu.add(Menu.NONE, 0, Menu.NONE, R.string.remove_sound);
     }
 
-    public static class Factory implements ItemAdapter.ItemViewHolder.Factory {
+    static class Factory implements ItemAdapter.ItemViewHolder.Factory {
 
         private final LayoutInflater mInflater;
 
@@ -124,6 +127,20 @@ final class RingtoneViewHolder extends ItemAdapter.ItemViewHolder<RingtoneHolder
         public ItemAdapter.ItemViewHolder<?> createViewHolder(ViewGroup parent, int viewType) {
             final View itemView = mInflater.inflate(R.layout.ringtone_item_sound, parent, false);
             return new RingtoneViewHolder(itemView);
+        }
+    }
+
+    @ColorInt
+    private static int resolveColor(Context context, @AttrRes int attr) {
+        final TypedArray a;
+        final int[] TEMP_ATTR = new int[1];
+        TEMP_ATTR[0] = attr;
+        a = context.obtainStyledAttributes(TEMP_ATTR);
+
+        try {
+            return a.getColor(0, Color.RED);
+        } finally {
+            a.recycle();
         }
     }
 }

@@ -36,12 +36,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 
 import com.finalweek10.android.musicpicker.R;
-import com.finalweek10.android.musicpicker.actionbarmenu.MenuItemControllerFactory;
 import com.finalweek10.android.musicpicker.data.DataModel;
 import com.finalweek10.android.musicpicker.util.ItemAdapter;
 import com.finalweek10.android.musicpicker.util.LogUtils;
 import com.finalweek10.android.musicpicker.util.RingtonePreviewKlaxon;
-import com.finalweek10.android.musicpicker.util.Toolbox;
 import com.finalweek10.android.musicpicker.util.Utils;
 
 import java.util.List;
@@ -122,17 +120,16 @@ public class MusicPickerActivity extends BaseMusicActivity
      * Therefore, this object will be created in onCreate() and set to null in finish().
      * If there's any better solution, pls tell me(pull  request, email or whatever). :)
      */
-    public static Toolbox sToolbox;
+    public static DataModel sDataModel;
 
     /**
      * @return an intent that launches the ringtone picker to edit the ringtone of all timers
      */
     public static Intent createRingtonePickerIntent(Context context) {
-        Uri defaultUri = Utils.getResourceUri(context, R.raw.default_ringtone);
         Intent intent = new Intent(context, MusicPickerActivity.class)
                 .putExtra(EXTRA_TITLE, R.string.module_name)
-                .putExtra(EXTRA_RINGTONE_URI, defaultUri)
-                .putExtra(EXTRA_DEFAULT_RINGTONE_URI, defaultUri)
+                .putExtra(EXTRA_RINGTONE_URI, Utils.RINGTONE_SILENT)
+                .putExtra(EXTRA_DEFAULT_RINGTONE_URI, Utils.RINGTONE_SILENT)
                 .putExtra(EXTRA_DEFAULT_RINGTONE_NAME, R.string.default_alarm_ringtone_title)
                 .putExtra(EXTRA_PREVIEW_STREAM_TYPE, STREAM_ALARM);
         if (Utils.isLOrLater()) {
@@ -153,8 +150,7 @@ public class MusicPickerActivity extends BaseMusicActivity
         final Context context = getApplicationContext();
         final Intent intent = getIntent();
 
-        sToolbox = new Toolbox(
-                new DataModel(this, Utils.getDefaultSharedPreferences(this)));
+        sDataModel = new DataModel(this, Utils.getDefaultSharedPreferences(this));
 
         if (mSelectedRingtoneUri == null) {
             mSelectedRingtoneUri = intent.getParcelableExtra(EXTRA_RINGTONE_URI);
@@ -174,9 +170,6 @@ public class MusicPickerActivity extends BaseMusicActivity
         }
 
         setVolumeControlStream(streamType);
-
-        mOptionsMenuManager.addMenuItemController(MenuItemControllerFactory.getInstance()
-                .buildMenuItemControllers(this));
 
         final LayoutInflater inflater = getLayoutInflater();
         final OnItemClickedListener listener = new ItemClickWatcher();
@@ -220,7 +213,7 @@ public class MusicPickerActivity extends BaseMusicActivity
                     .setData(holder.getUri());
             setResult(RESULT_OK, resultIntent);
         }
-        sToolbox = null;
+        sDataModel = null;
         super.finish();
     }
 
@@ -331,7 +324,7 @@ public class MusicPickerActivity extends BaseMusicActivity
         }
 
         // Remove the corresponding custom ringtone.
-        sToolbox.getDataModel().removeCustomRingtone(uri);
+        sDataModel.removeCustomRingtone(uri);
 
         // Find the ringtone to be removed from the adapter.
         final RingtoneHolder toRemove = getRingtoneHolder(uri);
@@ -461,7 +454,7 @@ public class MusicPickerActivity extends BaseMusicActivity
         @Override
         protected void onPostExecute(String title) {
             // Add the new custom ringtone to the data model.
-            sToolbox.getDataModel().addCustomRingtone(mUri, title);
+            sDataModel.addCustomRingtone(mUri, title);
 
             // When the loader completes, it must play the new ringtone.
             mSelectedRingtoneUri = mUri;

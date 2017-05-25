@@ -22,7 +22,7 @@ import com.finalweek10.android.musicpicker.util.ItemAdapter;
 import com.finalweek10.android.musicpicker.util.Utils;
 
 import static android.support.v7.widget.RecyclerView.NO_ID;
-import static com.finalweek10.android.musicpicker.ringtone.MusicPickerActivity.sToolbox;
+import static com.finalweek10.android.musicpicker.ringtone.MusicPickerActivity.sDataModel;
 
 abstract class RingtoneHolder extends ItemAdapter.ItemHolder<Uri> {
 
@@ -54,6 +54,6 @@ abstract class RingtoneHolder extends ItemAdapter.ItemHolder<Uri> {
     void setPlaying(boolean playing) { mPlaying = playing; }
 
     String getName() {
-        return mName != null ? mName : sToolbox.getDataModel().getRingtoneTitle(getUri());
+        return mName != null ? mName : sDataModel.getRingtoneTitle(getUri());
     }
 }

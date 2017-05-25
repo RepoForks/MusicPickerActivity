@@ -5,19 +5,15 @@ import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.finalweek10.android.musicpicker.R;
-import com.finalweek10.android.musicpicker.actionbarmenu.NavUpMenuItemController;
-import com.finalweek10.android.musicpicker.actionbarmenu.OptionsMenuManager;
 import com.finalweek10.android.musicpicker.util.DropShadowController;
 import com.finalweek10.android.musicpicker.util.RingtonePreviewKlaxon;
 
 /**
- * Basic Activity provides extra keys, Navigate-Up menu item,
- * music preview playback, and savedInstanceState
+ * Basic Activity provides extra keys, music preview playback, and savedInstanceState
  * (These are common stuffs in {@link MusicPickerActivity} and {@link LocalMusicPickerActivity}.
  */
 public abstract class BaseMusicActivity extends AppCompatActivity {
@@ -43,11 +39,6 @@ public abstract class BaseMusicActivity extends AppCompatActivity {
     protected DropShadowController mDropShadowController;
 
     /**
-     * Generates the items in the activity context menu.
-     */
-    protected OptionsMenuManager mOptionsMenuManager;
-
-    /**
      * Displays a set of selectable ringtones.
      */
     protected RecyclerView mRecyclerView;
@@ -69,26 +60,12 @@ public abstract class BaseMusicActivity extends AppCompatActivity {
             mIsPlaying = savedInstanceState.getBoolean(STATE_KEY_PLAYING);
             mSelectedRingtoneUri = savedInstanceState.getParcelable(EXTRA_RINGTONE_URI);
         }
-
-        mOptionsMenuManager = new OptionsMenuManager();
-        mOptionsMenuManager.addMenuItemController(new NavUpMenuItemController(this));
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        mOptionsMenuManager.onCreateOptionsMenu(menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        mOptionsMenuManager.onPrepareOptionsMenu(menu);
-        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return mOptionsMenuManager.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        finish();
+        return true;
     }
 
     @Override

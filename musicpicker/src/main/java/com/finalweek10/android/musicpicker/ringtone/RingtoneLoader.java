@@ -28,11 +28,12 @@ import com.finalweek10.android.musicpicker.R;
 import com.finalweek10.android.musicpicker.data.CustomRingtone;
 import com.finalweek10.android.musicpicker.util.ItemAdapter;
 import com.finalweek10.android.musicpicker.util.LogUtils;
+import com.finalweek10.android.musicpicker.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.finalweek10.android.musicpicker.ringtone.MusicPickerActivity.sToolbox;
+import static com.finalweek10.android.musicpicker.ringtone.MusicPickerActivity.sDataModel;
 import static com.finalweek10.android.musicpicker.util.Utils.RINGTONE_SILENT;
 
 /**
@@ -55,15 +56,15 @@ class RingtoneLoader extends AsyncTaskLoader<List<ItemAdapter.ItemHolder<Uri>>> 
     protected void onStartLoading() {
         super.onStartLoading();
 
-        mCustomRingtones = sToolbox.getDataModel().getCustomRingtones();
+        mCustomRingtones = sDataModel.getCustomRingtones();
         forceLoad();
     }
 
     @Override
     public List<ItemAdapter.ItemHolder<Uri>> loadInBackground() {
         // Prime the ringtone title cache for later access.
-        sToolbox.getDataModel().loadRingtoneTitles();
-        sToolbox.getDataModel().loadRingtonePermissions();
+        sDataModel.loadRingtoneTitles();
+        sDataModel.loadRingtonePermissions();
 
         // Fetch the standard system ringtones.
         final RingtoneManager ringtoneManager = new RingtoneManager(getContext());
@@ -99,8 +100,10 @@ class RingtoneLoader extends AsyncTaskLoader<List<ItemAdapter.ItemHolder<Uri>>> 
         // Add an item holder for the silent ringtone.
         itemHolders.add(new SystemRingtoneHolder(RINGTONE_SILENT, null));
 
-        // Add an item holder for the system default alarm sound.
-        itemHolders.add(new SystemRingtoneHolder(mDefaultRingtoneUri, mDefaultRingtoneTitle));
+        if (!mDefaultRingtoneUri.equals(Utils.RINGTONE_SILENT)) {
+            // Add an item holder for the app default alarm sound.
+            itemHolders.add(new SystemRingtoneHolder(mDefaultRingtoneUri, mDefaultRingtoneTitle));
+        }
 
         // Add an item holder for each system ringtone.
         for (int i = 0; i < systemRingtoneCount; i++) {

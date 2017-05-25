@@ -35,7 +35,7 @@ public class LocalMusicPickerActivity extends BaseMusicActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_music);
+        setContentView(R.layout.local_ringtone_picker);
 
         mRecyclerView = (FastScrollRecyclerView) findViewById(R.id.recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

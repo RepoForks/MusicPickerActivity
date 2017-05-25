@@ -21,7 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AbsListView;
 
-import static com.finalweek10.android.musicpicker.ringtone.MusicPickerActivity.sToolbox;
+import static com.finalweek10.android.musicpicker.ringtone.MusicPickerActivity.sDataModel;
 
 /**
  * This controller encapsulates the logic that watches a model for changes to scroll state and
@@ -65,7 +65,7 @@ public final class DropShadowController {
     private DropShadowController(View dropShadowView) {
         mDropShadowView = dropShadowView;
         mDropShadowAnimator = AnimatorUtils.getAlphaAnimator(mDropShadowView, 0f, 1f)
-                .setDuration(sToolbox.getDataModel().getShortAnimationDuration());
+                .setDuration(sDataModel.getShortAnimationDuration());
     }
 
     /**

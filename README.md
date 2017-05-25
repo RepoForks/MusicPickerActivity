@@ -7,8 +7,8 @@ This library is separated and modified from [AOSP DeskClock](https://android.goo
 </h1>
 
 #### Minimal API Level: 14
-When devices is equal to or higher than API Level 19(KitKat), this library uses [ACTION_OPEN_DOCUMENT](https://developer.android.com/reference/android/content/Intent.html#ACTION_OPEN_DOCUMENT) to retrieve local audio files.
-When devices is lower than KitKat, this library starts another activity(LocalMusicPickerActivity) to select.
+For Android 19+(includes 19), this library uses [ACTION_OPEN_DOCUMENT](https://developer.android.com/reference/android/content/Intent.html#ACTION_OPEN_DOCUMENT) to retrieve local audio files.
+For Android 19-, this library starts another activity(LocalMusicPickerActivity) to select.
 
 ## Usage
 Step 1. Add the JitPack repository to your build file
@@ -24,7 +24,7 @@ Step 2. Add the dependency
 ```
 dependencies {
     ...
-    compile 'com.github.ykAR6Bqy5DeG:MusicPickerActivity:1.0.3'
+    compile 'com.github.ykAR6Bqy5DeG:MusicPickerActivity:0.0.2'
 }
 ```
 Step 3. Add activity style to styles.xml
@@ -37,7 +37,7 @@ Parent is **RingtonePickerTheme** and define colorPrimary and colorAccent here.
     <item name="android:windowBackground">@color/colorPrimaryDark</item>
 </style>
 ```
-Step 4. Add activity to manifest
+Step 4. Add activities to manifest
 ```
 <activity
     android:name="com.finalweek10.android.musicpicker.ringtone.MusicPickerActivity"
@@ -53,18 +53,18 @@ Step 4. Add activity to manifest
 ```
 Step 5. Select music and have fun!
 ```
-startActivityForResult(MusicPickerActivity.createRingtonePickerIntent(MainActivity.this), REQUEST_MUSIC_CODE);
+startActivityForResult(MusicPickerActivity.createRingtonePickerIntent(MainActivity.this), 0);
 ```
-#### Check sample to explore all possible tweaks.
+Check [sample activity](https://github.com/ykAR6Bqy5DeG/MusicPickerActivity/tree/master/sample/src/main/java/com/finalweek10/android/musicpickeractivity/MainActivity.java) to explore all possible tweaks.
 ## Optional Values
 ### Extra values
-| Keys          | Type           | Meaning  |
-| ------------- |:-------------|:-----|
-| EXTRA_TITLE      | string resource(int) | the resource id to the title of this activity |
-| EXTRA_RINGTONE_URI      | Uri      |  the selected ringtone |
-| EXTRA_DEFAULT_RINGTONE_URI | Uri      | your app's default ringtone URI |
-| EXTRA_DEFAULT_RINGTONE_NAME | string resource(int)      | your app's default ringtone name |
-| EXTRA_PREVIEW_STREAM_TYPE | stream type(int)      | the stream type of preview musics |
+| Keys          | Type           |Default value| Meaning  |
+| ------------- |:-------------|:--------|:-----|
+| EXTRA_TITLE| string resource(int) |"Music Picker"| the resource id to the title of this activity |
+| EXTRA_RINGTONE_URI| Uri|Uri.EMPTY|the selected ringtone|
+| EXTRA_DEFAULT_RINGTONE_URI | Uri|Uri.EMPTY| your app's default ringtone URI |
+| EXTRA_DEFAULT_RINGTONE_NAME |string resource(int)|R.string.default_alarm_ringtone_title| your app's default ringtone name |
+| EXTRA_PREVIEW_STREAM_TYPE |stream type(int)|AudioManager.STREAM_ALARM| the stream type of preview musics |
 ### Return values
 | Keys          | Type           | Meaning  |
 | ------------- |:-------------|:-----|
@@ -81,28 +81,13 @@ colorAccent: defines the color of "Your sounds", "Device sounds" and the check a
 </h1>
 
 ## Permissions
-READ_EXTERNAL_STORAGE is used when devices is lower than KitKat.
-Since this library doesn't know if there is a way to only declare a permission when API Level is bigger than 19,
+READ_EXTERNAL_STORAGE is used for Android 19-(excludes 19)
+
+Since this library doesn't know if there is a way to only declare a permission when API Level is lower than 19,
 he just include that permission in his AndroidManifest.xml.
 
-## Test
-This library works fine with my physical KitKat and Lollipop devices.
-And while using API Level 15 and 16 emulators, selecting system default music works fine
-but I cannot test selecting local music because of a possible emulator bug(Cannot recognize SD card on those emulators).
-So if you find something goes wrong, just post an issue or use any tool to tell me. :)
-
-## Update
-#### 1.0.3
-Makes project resources private
-#### 1.0.2
-Fixes shared preference lost bug on Android N
-#### 1.0.1
-1. Adds support for devices lower than API Level 19
-2. Adds six translations
-3. Learns how to publish a library and apply it...
-
 ## TODO
-1. Add more translations(Current Available Languages: German, Spanish, French, Japanese, Simplified Chinese and Traditional Chinese.)
+Add more translations(Current Available Languages: English, German, Spanish, French, Japanese, Simplified Chinese and Traditional Chinese.)
 
 ## License
 MusicPickerActivity is licensed under the [MIT license](LICENSE).

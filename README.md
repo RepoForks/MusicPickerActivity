@@ -24,7 +24,7 @@ Step 2. Add the dependency
 ```
 dependencies {
     ...
-    compile 'com.github.ykAR6Bqy5DeG:MusicPickerActivity:0.0.2'
+    compile 'com.github.ykAR6Bqy5DeG:MusicPickerActivity:0.0.3'
 }
 ```
 Step 3. Add activity style to styles.xml
@@ -85,6 +85,9 @@ READ_EXTERNAL_STORAGE is used for Android 19-(excludes 19)
 
 Since this library doesn't know if there is a way to only declare a permission when API Level is lower than 19,
 he just include that permission in his AndroidManifest.xml.
+
+## Update
+->0.0.3 Use a nicer fast scroller and remove unnecessary dependencies and classes
 
 ## TODO
 Add more translations(Current Available Languages: English, German, Spanish, French, Japanese, Simplified Chinese and Traditional Chinese.)

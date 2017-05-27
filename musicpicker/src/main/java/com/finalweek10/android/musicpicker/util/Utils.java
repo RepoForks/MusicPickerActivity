@@ -88,7 +88,7 @@ public class Utils {
 
     /**
      * @param view the scrollable view to test
-     * @return {@code true} iff the {@code view} content is currently scrolled to the top
+     * @return {@code true} if the {@code view} content is currently scrolled to the top
      */
     static boolean isScrolledToTop(View view) {
         return !view.canScrollVertically(-1);

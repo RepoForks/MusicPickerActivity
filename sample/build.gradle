@@ -23,5 +23,5 @@ dependencies {
     compile project(':musicpicker')
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.android.support.constraint:constraint-layout:${rootProject.ext.constraintLayoutVersion}"
-    compile 'com.squareup.leakcanary:leakcanary-android:1.5'
+//    compile 'com.squareup.leakcanary:leakcanary-android:1.5'
 }

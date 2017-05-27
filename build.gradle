@@ -28,7 +28,7 @@ ext {
     espressoVersion = "2.2.2"
     junitVersion = "4.12"
     constraintLayoutVersion = "1.0.2"
-    fastScrollRecyclerViewVersion = "1.0.16"
+    fastScrollLibraryVersion = "0.2.5"
 
     VERSION_CODE = "15"
     VERSION_NAME = "0.0.2"

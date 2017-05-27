@@ -3,24 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true">
 
     <include layout="@layout/drop_shadow"/>
 
-    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-        android:id="@+id/recycler"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.futuremind.recyclerviewfastscroll.FastScroller
+        android:id="@+id/fast_scroll"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        app:fastScrollAutoHide="false"
-        app:fastScrollAutoHideDelay="1500"
-        app:fastScrollPopupBackgroundSize="88dp"
-        app:fastScrollPopupBgColor="?attr/colorAccent"
-        app:fastScrollPopupPosition="adjacent"
-        app:fastScrollPopupTextColor="?attr/colorPrimary"
-        app:fastScrollPopupTextSize="56sp"
-        app:fastScrollThumbColor="?attr/colorAccent"
-        tools:listitem="@layout/ringtone_item_sound"/>
+        android:layout_gravity="end"
+        android:orientation="vertical"/>
 
 </FrameLayout>

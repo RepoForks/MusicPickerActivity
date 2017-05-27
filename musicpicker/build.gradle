@@ -26,5 +26,6 @@ android {
 
 dependencies {
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    compile "com.simplecityapps:recyclerview-fastscroll:${rootProject.ext.fastScrollRecyclerViewVersion}"
+    compile "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVersion}"
+    compile "com.futuremind.recyclerfastscroll:fastscroll:${rootProject.ext.fastScrollLibraryVersion}"
 }

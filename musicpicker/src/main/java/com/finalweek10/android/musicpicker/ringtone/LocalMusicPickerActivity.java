@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
 import com.finalweek10.android.musicpicker.R;
 import com.finalweek10.android.musicpicker.util.ItemAdapter;
 import com.finalweek10.android.musicpicker.util.RingtonePreviewKlaxon;
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
+import com.futuremind.recyclerviewfastscroll.FastScroller;
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.List;
 
@@ -37,7 +38,8 @@ public class LocalMusicPickerActivity extends BaseMusicActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.local_ringtone_picker);
 
-        mRecyclerView = (FastScrollRecyclerView) findViewById(R.id.recycler);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        FastScroller fastScroller = (FastScroller) findViewById(R.id.fast_scroll);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         final LayoutInflater inflater = getLayoutInflater();
@@ -48,6 +50,7 @@ public class LocalMusicPickerActivity extends BaseMusicActivity
         mRingtoneAdapter.withViewTypes(ringtoneFactory, listener, VIEW_TYPE_CUSTOM_SOUND);
 
         mRecyclerView.setAdapter(mRingtoneAdapter);
+        fastScroller.setRecyclerView(mRecyclerView);
 
         getLoaderManager().initLoader(0 /* id */, null /* args */, this /* callback */);
     }
@@ -104,10 +107,9 @@ public class LocalMusicPickerActivity extends BaseMusicActivity
     }
 
     private class FastScrollAdapter extends ItemAdapter<RingtoneHolder>
-            implements FastScrollRecyclerView.SectionedAdapter {
-        @NonNull
+            implements SectionTitleProvider {
         @Override
-        public String getSectionName(int position) {
+        public String getSectionTitle(int position) {
             String title = getItemAt(position).getName();
             return title.length() > 0 ? title.substring(0, 1) : "";
         }
